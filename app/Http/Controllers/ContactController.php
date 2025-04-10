@@ -37,6 +37,11 @@ class ContactController extends Controller
             'phone' => 'required|string|digits_between:8,11',
             'message' => 'nullable|string',
         ], [
+            'name.required' => 'De naam is verplicht.',
+            'email.required' => 'Het e-mailadres is verplicht.',
+            'email.email' => 'Voer een geldig e-mailadres in.',
+            'email.unique' => 'Dit e-mailadres is al in gebruik.',
+            'phone.required' => 'Het telefoonnummer is verplicht.',
             'phone.digits_between' => 'Het telefoonnummer moet minimaal 8 en maximaal 11 cijfers bevatten.',
         ]);
 
@@ -44,7 +49,7 @@ class ContactController extends Controller
 
         // Zorg ervoor dat er slechts één melding wordt weergegeven
         session()->forget('success');
-        return redirect()->route('contacts.index')->with('success', 'Contact successfully added.');
+        return redirect()->route('contacts.index')->with('success', 'Contact succesvol toegevoegd.');
     }
     
     public function show(Contact $contact)
