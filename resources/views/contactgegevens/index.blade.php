@@ -60,7 +60,7 @@
                             <a href="{{ route('contacts.edit', $contact) }}" class="px-2 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">
                                 Bewerken
                             </a>
-                            <form action="{{ route('contacts.destroy', $contact) }}" method="POST" class="inline-block" onsubmit="return confirm('Weet je zeker dat je deze klant wilt verwijderen?');">
+                            <form action="{{ route('contacts.destroy', $contact) }}" method="POST" class="inline-block" onsubmit="return confirmDelete();">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600">
@@ -77,4 +77,10 @@
             </tbody>
         </table>
     </div>
+
+    <script>
+        function confirmDelete() {
+            return confirm('Weet je zeker dat je deze klant wilt verwijderen? Alle gegevens worden permanent verwijderd.');
+        }
+    </script>
 </x-app-layout>
