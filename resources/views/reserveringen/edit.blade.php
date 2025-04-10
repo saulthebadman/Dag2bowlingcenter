@@ -17,6 +17,8 @@
             @csrf
             @method('PUT')
 
+            <input type="hidden" name="klant_id" value="{{ $reservering->klant_id }}">
+
             <div>
                 <label class="block font-medium text-gray-700">Klantnaam</label>
                 <input type="text" name="klant_naam" class="w-full border rounded px-4 py-2" value="{{ old('klant_naam', $reservering->klant_naam) }}">
@@ -25,18 +27,6 @@
             <div>
                 <label class="block font-medium text-gray-700">Telefoonnummer</label>
                 <input type="text" name="telefoonnummer" class="w-full border rounded px-4 py-2" value="{{ old('telefoonnummer', $reservering->telefoonnummer) }}">
-            </div>
-
-            <div>
-                <label class="block font-medium text-gray-700">Baan</label>
-                <select name="baan_id" class="w-full border rounded px-4 py-2">
-                    <option value="">-- Kies een baan --</option>
-                    @foreach($banen as $baan)
-                        <option value="{{ $baan->id }}" {{ $baan->id == $reservering->baan_id ? 'selected' : '' }}>
-                            {{ $baan->nummer }}
-                        </option>
-                    @endforeach
-                </select>
             </div>
 
             <div class="grid grid-cols-2 gap-4">

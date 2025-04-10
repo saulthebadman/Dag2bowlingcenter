@@ -18,6 +18,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 
+
+Route::get('/userstories', function () {
+    return view('userstories');
+});
+
 Route::get('/', function () {
     return redirect()->route('reserveringen.index');
 });
@@ -28,6 +33,8 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/openingstijden', [\App\Http\Controllers\OpeningstijdenController::class, 'index'])->name('openingstijden.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
