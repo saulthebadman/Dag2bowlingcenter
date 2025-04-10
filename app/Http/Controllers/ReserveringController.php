@@ -44,56 +44,27 @@ class ReserveringController extends Controller
         ]);
 
         try {
-            // Controleer of de reservering binnen de openingstijden valt
-            $dag = date('N', strtotime($request->datum)); // 1 = maandag, 7 = zondag
-            $uur = intval(date('H', strtotime($request->tijd)));
-
-            if (($dag >= 1 && $dag <= 5 && ($uur < 14 || $uur >= 22)) || // Maandag t/m vrijdag
-                ($dag >= 6 && $dag <= 7 && ($uur < 14 || $uur > 24))) {  // Zaterdag en zondag
-                return back()->withErrors(['error' => 'De gekozen tijd valt buiten de openingstijden.'])->withInput();
-            }
-
-            // Controleer op dubbele reservering
-            $existingReservation = DB::table('reserveringen')
-                ->where('baan_id', $request->baan_id)
-                ->where('datum', $request->datum)
-                ->where('tijd', $request->tijd)
-                ->first();
-
-            if ($existingReservation) {
-                return back()->withErrors(['error' => 'De gekozen baan is al gereserveerd op deze datum en tijd.'])->withInput();
-            }
-
             $tarief = $this->berekenTarief($request->datum, $request->tijd);
             $magicBowlen = $this->isMagicBowlen($request->datum, $request->tijd);
 
-            DB::table('reserveringen')->insert([
-                'klant_id' => $this->getKlantId($request->klant_naam, $request->telefoonnummer),
-                'baan_id' => $request->baan_id,
-                'datum' => $request->datum,
-                'tijd' => $request->tijd,
-                'aantal_personen' => $request->aantal_personen,
-                'opmerking' => $request->opmerking,
-                'tarief' => $tarief,
-                'opties' => json_encode($request->opties),
-                'betaling_op_locatie' => $request->has('betaling_op_locatie'),
-                'magic_bowlen' => $magicBowlen,
-                'reserveringsnummer' => $this->generateReserveringsnummer(),
+            DB::select('CALL SP_InsertReservering(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+                $request->klant_naam,
+                $request->telefoonnummer,
+                $request->baan_id,
+                $request->datum,
+                $request->tijd,
+                $request->aantal_personen,
+                $request->opmerking,
+                $tarief,
+                json_encode($request->opties),
+                $request->has('betaling_op_locatie'),
+                $magicBowlen
             ]);
 
             return redirect()->route('reserveringen.index')->with('success', 'Je reservering is succesvol gemaakt!');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Er is een onverwachte fout opgetreden. Probeer het later opnieuw.']);
         }
-    }
-
-    private function generateReserveringsnummer()
-    {
-        do {
-            $reserveringsnummer = 'RSV-' . date('Ymd') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
-        } while (DB::table('reserveringen')->where('reserveringsnummer', $reserveringsnummer)->exists());
-
-        return $reserveringsnummer;
     }
 
     public function edit($id)
