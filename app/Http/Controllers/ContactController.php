@@ -71,6 +71,9 @@ class ContactController extends Controller
             'phone' => 'required|string|digits_between:8,11',
             'message' => 'nullable|string',
         ], [
+            'email.required' => 'Het e-mailadres is verplicht.',
+            'email.email' => 'Voer een geldig e-mailadres in.',
+            'email.unique' => 'Dit e-mailadres is al in gebruik.',
             'phone.digits_between' => 'Het telefoonnummer moet minimaal 8 en maximaal 11 cijfers bevatten.',
         ]);
 
