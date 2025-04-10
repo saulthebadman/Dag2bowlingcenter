@@ -25,7 +25,8 @@ class ReserveringController extends Controller
 
     public function create()
     {
-        return view('reserveringen.create');
+        $banen = DB::table('banen')->get(); // Haal alle banen op
+        return view('reserveringen.create', compact('banen'));
     }
 
     public function store(Request $request)
@@ -36,6 +37,7 @@ class ReserveringController extends Controller
             'datum' => 'required|date',
             'tijd' => 'required',
             'aantal_personen' => 'required|integer|min:1',
+            'baan_id' => 'required|exists:banen,id', // Controleer of de baan bestaat
             'opmerking' => 'nullable|string',
             'opties' => 'nullable|array',
             'betaling_op_locatie' => 'nullable|boolean',
@@ -51,6 +53,7 @@ class ReserveringController extends Controller
 
             DB::table('reserveringen')->insert([
                 'klant_id' => $this->getKlantId($request->klant_naam, $request->telefoonnummer),
+                'baan_id' => $request->baan_id,
                 'datum' => $request->datum,
                 'tijd' => $request->tijd,
                 'aantal_personen' => $request->aantal_personen,
@@ -71,10 +74,12 @@ class ReserveringController extends Controller
     {
         $reservering = DB::table('reserveringen')
             ->join('klanten', 'reserveringen.klant_id', '=', 'klanten.id')
+            ->join('banen', 'reserveringen.baan_id', '=', 'banen.id')
             ->select(
                 'reserveringen.*',
                 'klanten.naam as klant_naam',
-                'klanten.telefoonnummer'
+                'klanten.telefoonnummer',
+                'banen.nummer as baan_nummer'
             )
             ->where('reserveringen.id', $id)
             ->first();
@@ -83,7 +88,8 @@ class ReserveringController extends Controller
             return redirect()->route('reserveringen.index')->with('error', 'Reservering niet gevonden');
         }
 
-        return view('reserveringen.edit', compact('reservering'));
+        $banen = DB::table('banen')->get(); // Haal alle banen op
+        return view('reserveringen.edit', compact('reservering', 'banen'));
     }
 
     public function update(Request $request, $id)

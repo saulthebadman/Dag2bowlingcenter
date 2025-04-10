@@ -11,6 +11,7 @@ return new class extends Migration {
         Schema::create('reserveringen', function (Blueprint $table) {
             $table->id();
             $table->foreignId('klant_id')->nullable()->constrained('klanten')->onDelete('cascade');
+            $table->foreignId('baan_id')->constrained('banen')->onDelete('cascade'); // Voeg een relatie toe met de banen-tabel
             $table->string('reserveringsnummer')->unique();
             $table->date('datum');
             $table->time('tijd');

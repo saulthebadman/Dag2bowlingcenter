@@ -87,6 +87,21 @@
             <p class="text-sm text-gray-500">Magic Bowlen is beschikbaar in het weekend van 22:00 tot 24:00 uur.</p>
         </div>
 
+        <div>
+            <label for="baan_id" class="block font-medium">Kies een baan</label>
+            <select name="baan_id" class="w-full border rounded px-3 py-2 @error('baan_id') border-red-500 @enderror">
+                <option value="">Selecteer een baan</option>
+                @foreach($banen as $baan)
+                    <option value="{{ $baan->id }}" {{ old('baan_id') == $baan->id ? 'selected' : '' }}>
+                        Baan {{ $baan->nummer }} {{ $baan->is_kinderbaan ? '(Kinderbaan)' : '' }}
+                    </option>
+                @endforeach
+            </select>
+            @error('baan_id')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
         <div class="flex justify-between items-center mt-6">
             <a href="{{ route('reserveringen.index') }}" class="text-gray-600 underline">Annuleren</a>
             <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Opslaan</button>
