@@ -18,6 +18,8 @@
             </div>
         @endif
 
+        <!-- hier ziet de sequrity dus hier word het beveiligd -->
+
         <form action="{{ route('contacts.update', $contact) }}" method="POST">
             @csrf
             @method('PUT')

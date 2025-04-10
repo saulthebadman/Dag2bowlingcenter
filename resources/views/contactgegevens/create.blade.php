@@ -18,6 +18,9 @@
             </div>
         @endif
 
+        
+
+        <!-- hier ziet de sequrity dus hier word het beveiligd -->
         <form action="{{ route('contacts.store') }}" method="POST">
             @csrf
             <div class="mb-4">

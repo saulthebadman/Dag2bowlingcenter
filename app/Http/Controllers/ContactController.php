@@ -86,10 +86,11 @@ class ContactController extends Controller
 
     public function destroy(Contact $contact)
     {
-        $contact->delete();
-
-        // Zorg ervoor dat er slechts één melding wordt weergegeven
-        session()->forget('success');
-        return redirect()->route('contacts.index')->with('success', 'Klantgegevens succesvol verwijderd.');
+        try {
+            $contact->delete();
+            return redirect()->route('contacts.index')->with('success', 'Klantgegevens succesvol verwijderd.');
+        } catch (\Exception $e) {
+            return redirect()->route('contacts.index')->with('error', 'Er is een fout opgetreden bij het verwijderen van de klant.');
+        }
     }
 }
