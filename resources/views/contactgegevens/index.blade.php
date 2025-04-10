@@ -14,6 +14,8 @@
             </div>
         @endif
 
+        
+
         <!-- Zoekbalk -->
         <form action="{{ route('contacts.index') }}" method="GET" class="mb-6">
             <div class="flex items-center">
@@ -22,7 +24,7 @@
                     name="search" 
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
                     placeholder="Zoek contact..." 
-                    value="{{ request('search') }}">
+                    value="{{ $search ?? '' }}">
                 <button 
                     type="submit" 
                     class="ml-2 px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600">
@@ -54,7 +56,7 @@
                             <a href="{{ route('contacts.edit', $contact) }}" class="px-2 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">
                                 Bewerken
                             </a>
-                            <form action="{{ route('contacts.destroy', $contact) }}" method="POST" class="inline-block">
+                            <form action="{{ route('contacts.destroy', $contact) }}" method="POST" class="inline-block" onsubmit="return confirm('Weet je zeker dat je deze klant wilt verwijderen?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600">

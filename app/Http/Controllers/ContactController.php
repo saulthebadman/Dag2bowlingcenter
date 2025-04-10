@@ -6,10 +6,17 @@ use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $contacts = Contact::all();
-        return view('contactgegevens.index', compact('contacts'));
+        $search = $request->input('search');
+
+        $contacts = Contact::when($search, function ($query, $search) {
+            $query->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%')
+                  ->orWhere('phone', 'like', '%' . $search . '%');
+        })->get();
+
+        return view('contactgegevens.index', compact('contacts', 'search'));
     }
 
     public function create()
@@ -28,6 +35,8 @@ class ContactController extends Controller
 
         Contact::create($request->all());
 
+        // Zorg ervoor dat er slechts één melding wordt weergegeven
+        session()->forget('success');
         return redirect()->route('contacts.index')->with('success', 'Contact successfully added.');
     }
     
@@ -46,19 +55,24 @@ class ContactController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:contacts',
+            'email' => 'required|email|unique:contacts,email,' . $contact->id,
             'phone' => 'required|string|max:15',
             'message' => 'nullable|string',
         ]);
-    
-        Contact::create($request->all());
-    
-        return redirect()->route('contacts.index')->with('success', 'Contact created successfully.');
+
+        $contact->update($request->all());
+
+        // Zorg ervoor dat er slechts één melding wordt weergegeven
+        session()->forget('success');
+        return redirect()->route('contacts.index')->with('success', 'Klantgegevens succesvol bijgewerkt.');
     }
 
     public function destroy(Contact $contact)
     {
         $contact->delete();
-        return redirect()->route('contacts.index')->with('success', 'Contact deleted successfully.');
+
+        // Zorg ervoor dat er slechts één melding wordt weergegeven
+        session()->forget('success');
+        return redirect()->route('contacts.index')->with('success', 'Klantgegevens succesvol verwijderd.');
     }
 }
