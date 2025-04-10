@@ -37,13 +37,24 @@ class ReserveringController extends Controller
             'datum' => 'required|date',
             'tijd' => 'required',
             'aantal_personen' => 'required|integer|min:1',
-            'baan_id' => 'required|exists:banen,id', // Controleer of de baan bestaat
+            'baan_id' => 'required|exists:banen,id',
             'opmerking' => 'nullable|string',
             'opties' => 'nullable|array',
             'betaling_op_locatie' => 'nullable|boolean',
         ]);
 
         try {
+            // Controleer op conflicten
+            $conflict = DB::table('reserveringen')
+                ->where('baan_id', $request->baan_id)
+                ->where('datum', $request->datum)
+                ->where('tijd', $request->tijd)
+                ->exists();
+
+            if ($conflict) {
+                return back()->withErrors(['error' => 'De gekozen baan is al gereserveerd op deze datum en tijd.'])->withInput();
+            }
+
             $tarief = $this->berekenTarief($request->datum, $request->tijd);
             $magicBowlen = $this->isMagicBowlen($request->datum, $request->tijd);
 
@@ -94,48 +105,52 @@ class ReserveringController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'klant_naam' => 'required|string|max:255',
             'telefoonnummer' => 'required|string|max:20',
             'datum' => 'required|date',
             'tijd' => 'required',
             'aantal_personen' => 'required|integer|min:1',
+            'baan_id' => 'required|exists:banen,id',
             'opmerking' => 'nullable|string',
+            'opties' => 'nullable|array',
+            'betaling_op_locatie' => 'nullable|boolean',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
         try {
-            // Zoek of voeg klant toe
-            $klant = DB::table('klanten')
-                ->where('naam', $request->klant_naam)
-                ->where('telefoonnummer', $request->telefoonnummer)
-                ->first();
+            // Controleer op conflicten
+            $conflict = DB::table('reserveringen')
+                ->where('baan_id', $request->baan_id)
+                ->where('datum', $request->datum)
+                ->where('tijd', $request->tijd)
+                ->where('id', '!=', $id) // Uitsluiten van de huidige reservering
+                ->exists();
 
-            if (!$klant) {
-                $klant_id = DB::table('klanten')->insertGetId([
-                    'naam' => $request->klant_naam,
-                    'telefoonnummer' => $request->telefoonnummer,
-                ]);
-            } else {
-                $klant_id = $klant->id;
+            if ($conflict) {
+                return back()->withErrors(['error' => 'De gekozen baan is al gereserveerd op deze datum en tijd.'])->withInput();
             }
 
-            // Update reservering
-            DB::statement('CALL SP_UpdateReservering(?, ?, ?, ?, ?, ?)', [
-                $id,
-                $klant_id,
-                $request->datum,
-                $request->tijd,
-                $request->aantal_personen,
-                $request->opmerking,
-            ]);
+            $tarief = $this->berekenTarief($request->datum, $request->tijd);
+            $magicBowlen = $this->isMagicBowlen($request->datum, $request->tijd);
+
+            DB::table('reserveringen')
+                ->where('id', $id)
+                ->update([
+                    'klant_id' => $this->getKlantId($request->klant_naam, $request->telefoonnummer),
+                    'baan_id' => $request->baan_id,
+                    'datum' => $request->datum,
+                    'tijd' => $request->tijd,
+                    'aantal_personen' => $request->aantal_personen,
+                    'opmerking' => $request->opmerking,
+                    'tarief' => $tarief,
+                    'opties' => json_encode($request->opties),
+                    'betaling_op_locatie' => $request->has('betaling_op_locatie'),
+                    'magic_bowlen' => $magicBowlen,
+                ]);
 
             return redirect()->route('reserveringen.index')->with('success', 'Reservering succesvol bijgewerkt!');
         } catch (\Exception $e) {
-            return back()->with('error', 'Fout bij bijwerken: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Er is een onverwachte fout opgetreden. Probeer het later opnieuw.']);
         }
     }
 

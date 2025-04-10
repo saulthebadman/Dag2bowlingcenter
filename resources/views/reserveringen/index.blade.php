@@ -32,6 +32,7 @@
                         <th class="border px-4 py-3 text-left">Datum</th>
                         <th class="border px-4 py-3 text-left">Tijd</th>
                         <th class="border px-4 py-3 text-left">Aantal Personen</th>
+                        <th class="border px-4 py-3 text-left">Baan</th>
                         <th class="border px-4 py-3 text-left">Acties</th>
                     </tr>
                 </thead>
@@ -44,6 +45,7 @@
                             <td class="border px-4 py-2">{{ $reservering->datum }}</td>
                             <td class="border px-4 py-2">{{ $reservering->tijd }}</td>
                             <td class="border px-4 py-2">{{ $reservering->aantal_personen }}</td>
+                            <td class="border px-4 py-2">Baan {{ $reservering->baan_nummer }}</td>
                             <td class="border px-4 py-2 flex gap-2">
                                 <a href="{{ route('reserveringen.edit', $reservering->id) }}"
                                    class="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500 transition text-sm">Bewerk</a>
@@ -59,7 +61,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center py-6 text-gray-500">Geen reserveringen gevonden.</td>
+                            <td colspan="8" class="text-center py-6 text-gray-500">Geen reserveringen gevonden.</td>
                         </tr>
                     @endforelse
                 </tbody>
