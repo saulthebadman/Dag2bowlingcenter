@@ -44,35 +44,21 @@ class ReserveringController extends Controller
         ]);
 
         try {
-            // Controleer op conflicten
-            $conflict = DB::table('reserveringen')
-                ->where('baan_id', $request->baan_id)
-                ->where('datum', $request->datum)
-                ->where('tijd', $request->tijd)
-                ->exists();
-
-            if ($conflict) {
-                return back()->withErrors(['error' => 'De gekozen baan is al gereserveerd op deze datum en tijd.'])->withInput();
-            }
-
             $tarief = $this->berekenTarief($request->datum, $request->tijd);
             $magicBowlen = $this->isMagicBowlen($request->datum, $request->tijd);
 
-            if ($tarief == 0.00) {
-                return back()->withErrors(['error' => 'De gekozen tijd valt buiten de openingstijden.'])->withInput();
-            }
-
-            DB::table('reserveringen')->insert([
-                'klant_id' => $this->getKlantId($request->klant_naam, $request->telefoonnummer),
-                'baan_id' => $request->baan_id,
-                'datum' => $request->datum,
-                'tijd' => $request->tijd,
-                'aantal_personen' => $request->aantal_personen,
-                'opmerking' => $request->opmerking,
-                'tarief' => $tarief,
-                'opties' => json_encode($request->opties),
-                'betaling_op_locatie' => $request->has('betaling_op_locatie'),
-                'magic_bowlen' => $magicBowlen,
+            DB::select('CALL SP_InsertReservering(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+                $request->klant_naam,
+                $request->telefoonnummer,
+                $request->baan_id,
+                $request->datum,
+                $request->tijd,
+                $request->aantal_personen,
+                $request->opmerking,
+                $tarief,
+                json_encode($request->opties),
+                $request->has('betaling_op_locatie'),
+                $magicBowlen
             ]);
 
             return redirect()->route('reserveringen.index')->with('success', 'Je reservering is succesvol gemaakt!');

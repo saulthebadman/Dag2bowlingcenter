@@ -50,6 +50,21 @@
             </div>
 
             <div>
+                <label class="block font-medium text-gray-700">Baan</label>
+                <select name="baan_id" class="w-full border rounded px-3 py-2">
+                    <option value="">Selecteer een baan</option>
+                    @foreach ($banen as $baan)
+                        <option value="{{ $baan->id }}" {{ old('baan_id') == $baan->id ? 'selected' : '' }}>
+                            Baan {{ $baan->nummer }} {{ $baan->is_kinderbaan ? '(Kinderbaan)' : '' }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('baan_id')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
                 <label class="block font-medium text-gray-700">Opmerking</label>
                 <textarea name="opmerking" placeholder="Voeg een opmerking toe (optioneel)" rows="3" class="w-full border rounded px-4 py-2">{{ old('opmerking') }}</textarea>
             </div>
@@ -67,6 +82,12 @@
             <div>
                 <label class="block font-medium text-gray-700">Betaling op locatie</label>
                 <input type="checkbox" name="betaling_op_locatie" value="1" {{ old('betaling_op_locatie') ? 'checked' : '' }} class="rounded">
+            </div>
+
+            <div>
+                <label class="block font-medium text-gray-700">Magic Bowlen</label>
+                <input type="checkbox" id="magic_bowlen" disabled class="rounded bg-gray-100">
+                <p class="text-sm text-gray-500">Magic Bowlen is beschikbaar in het weekend van 22:00 tot 24:00 uur.</p>
             </div>
 
             <div>
@@ -89,6 +110,7 @@
             const tijdInput = document.querySelector('input[name="tijd"]');
             const aantalPersonenInput = document.querySelector('input[name="aantal_personen"]');
             const totaalbedragInput = document.getElementById('totaalbedrag');
+            const magicBowlenCheckbox = document.getElementById('magic_bowlen');
 
             function berekenTarief() {
                 const datum = datumInput.value;
@@ -97,6 +119,7 @@
 
                 if (!datum || !tijd || aantalPersonen <= 0) {
                     totaalbedragInput.value = 'Vul alle velden in';
+                    magicBowlenCheckbox.checked = false;
                     return;
                 }
 
@@ -110,8 +133,13 @@
                 } else if (dag === 5 || dag === 6 || dag === 0) {
                     if (uur >= 14 && uur < 18) {
                         tariefPerUur = 28.00; // Vrijdag t/m zondag 14:00 - 18:00
-                    } else if (uur >= 18 && uur <= 24) {
-                        tariefPerUur = 33.50; // Vrijdag t/m zondag 18:00 - 24:00
+                    } else if (uur >= 18 && uur < 22) {
+                        tariefPerUur = 33.50; // Vrijdag t/m zondag 18:00 - 22:00
+                    } else if (uur >= 22 && uur <= 24) {
+                        tariefPerUur = 33.50; // Magic Bowlen
+                        magicBowlenCheckbox.checked = true;
+                    } else {
+                        magicBowlenCheckbox.checked = false;
                     }
                 }
 
