@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->decimal('tarief', 8, 2);
             $table->json('opties')->nullable();
             $table->boolean('betaling_op_locatie')->default(false); // Voeg een kolom toe voor betaling op locatie
+            $table->boolean('magic_bowlen')->default(false); // Voeg een kolom toe voor magic bowlen
             $table->timestamps();
         });
     }

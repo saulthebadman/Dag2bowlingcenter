@@ -37,54 +37,28 @@ class ReserveringController extends Controller
             'tijd' => 'required',
             'aantal_personen' => 'required|integer|min:1',
             'opmerking' => 'nullable|string',
+            'opties' => 'nullable|array',
             'betaling_op_locatie' => 'nullable|boolean',
         ]);
 
         try {
-            // Controleer op dubbele reservering
-            $existingReservation = DB::table('reserveringen')
-                ->join('klanten', 'reserveringen.klant_id', '=', 'klanten.id')
-                ->where('klanten.naam', $request->klant_naam)
-                ->where('klanten.telefoonnummer', $request->telefoonnummer)
-                ->where('reserveringen.datum', $request->datum)
-                ->where('reserveringen.tijd', $request->tijd)
-                ->first();
-
-            if ($existingReservation) {
-                return back()->withErrors(['error' => 'Je hebt al een reservering op deze datum en tijd.'])->withInput();
-            }
-
-            // Voeg klant toe of haal bestaande klant op
-            $klant = DB::table('klanten')
-                ->where('naam', $request->klant_naam)
-                ->where('telefoonnummer', $request->telefoonnummer)
-                ->first();
-
-            if (!$klant) {
-                $klant_id = DB::table('klanten')->insertGetId([
-                    'naam' => $request->klant_naam,
-                    'telefoonnummer' => $request->telefoonnummer,
-                ]);
-            } else {
-                $klant_id = $klant->id;
-            }
-
             $tarief = $this->berekenTarief($request->datum, $request->tijd);
+            $magicBowlen = $this->isMagicBowlen($request->datum, $request->tijd);
 
             if ($tarief == 0.00) {
                 return back()->withErrors(['error' => 'De gekozen tijd valt buiten de openingstijden.'])->withInput();
             }
 
-            // Voeg reservering toe met tarief en betaling_op_locatie
-            DB::select('CALL SP_InsertReservering(?, ?, ?, ?, ?, ?, ?, ?)', [
-                $request->klant_naam,
-                $request->telefoonnummer,
-                $request->datum,
-                $request->tijd,
-                $request->aantal_personen,
-                $request->opmerking,
-                $tarief,
-                $request->has('betaling_op_locatie') ? 1 : 0
+            DB::table('reserveringen')->insert([
+                'klant_id' => $this->getKlantId($request->klant_naam, $request->telefoonnummer),
+                'datum' => $request->datum,
+                'tijd' => $request->tijd,
+                'aantal_personen' => $request->aantal_personen,
+                'opmerking' => $request->opmerking,
+                'tarief' => $tarief,
+                'opties' => json_encode($request->opties),
+                'betaling_op_locatie' => $request->has('betaling_op_locatie'),
+                'magic_bowlen' => $magicBowlen,
             ]);
 
             return redirect()->route('reserveringen.index')->with('success', 'Je reservering is succesvol gemaakt!');
@@ -187,5 +161,30 @@ class ReserveringController extends Controller
         }
 
         return 0.00; // Buiten openingstijden
+    }
+
+    private function isMagicBowlen($datum, $tijd)
+    {
+        $dag = date('N', strtotime($datum)); // 1 = maandag, 7 = zondag
+        $uur = intval(date('H', strtotime($tijd)));
+
+        return ($dag >= 5 && $dag <= 7 && $uur >= 22 && $uur <= 24);
+    }
+
+    private function getKlantId($klantNaam, $telefoonnummer)
+    {
+        $klant = DB::table('klanten')
+            ->where('naam', $klantNaam)
+            ->where('telefoonnummer', $telefoonnummer)
+            ->first();
+
+        if (!$klant) {
+            return DB::table('klanten')->insertGetId([
+                'naam' => $klantNaam,
+                'telefoonnummer' => $telefoonnummer,
+            ]);
+        }
+
+        return $klant->id;
     }
 }

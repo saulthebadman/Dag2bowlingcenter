@@ -81,6 +81,12 @@
             <input type="text" id="totaalbedrag" readonly class="w-full border rounded px-3 py-2 bg-gray-100">
         </div>
 
+        <div>
+            <label for="magic_bowlen" class="block font-medium">Magic Bowlen</label>
+            <input type="checkbox" id="magic_bowlen" disabled class="rounded bg-gray-100">
+            <p class="text-sm text-gray-500">Magic Bowlen is beschikbaar in het weekend van 22:00 tot 24:00 uur.</p>
+        </div>
+
         <div class="flex justify-between items-center mt-6">
             <a href="{{ route('reserveringen.index') }}" class="text-gray-600 underline">Annuleren</a>
             <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Opslaan</button>
@@ -94,6 +100,7 @@
         const tijdInput = document.querySelector('input[name="tijd"]');
         const aantalPersonenInput = document.querySelector('input[name="aantal_personen"]');
         const totaalbedragInput = document.getElementById('totaalbedrag');
+        const magicBowlenCheckbox = document.getElementById('magic_bowlen');
 
         function berekenTarief() {
             const datum = datumInput.value;
@@ -102,6 +109,7 @@
 
             if (!datum || !tijd || aantalPersonen <= 0) {
                 totaalbedragInput.value = 'Vul alle velden in';
+                magicBowlenCheckbox.checked = false;
                 return;
             }
 
@@ -115,8 +123,13 @@
             } else if (dag === 5 || dag === 6 || dag === 0) {
                 if (uur >= 14 && uur < 18) {
                     tariefPerUur = 28.00; // Vrijdag t/m zondag 14:00 - 18:00
-                } else if (uur >= 18 && uur <= 24) {
-                    tariefPerUur = 33.50; // Vrijdag t/m zondag 18:00 - 24:00
+                } else if (uur >= 18 && uur < 22) {
+                    tariefPerUur = 33.50; // Vrijdag t/m zondag 18:00 - 22:00
+                } else if (uur >= 22 && uur <= 24) {
+                    tariefPerUur = 33.50; // Magic Bowlen
+                    magicBowlenCheckbox.checked = true;
+                } else {
+                    magicBowlenCheckbox.checked = false;
                 }
             }
 
