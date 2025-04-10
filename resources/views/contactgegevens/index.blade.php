@@ -1,12 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Reserveringsoverzicht') }}
+            {{ __('contactgegevens') }}
         </h2>
     </x-slot>
 
     <div class="container mx-auto px-4 py-6">
         <h1 class="text-2xl font-bold mb-4">Contactgegevens</h1>
+
+        @if (session('success'))
+            <div class="mb-4 p-4 bg-green-100 text-green-800 rounded-md">
+                {{ session('success') }}
+            </div>
+        @endif
 
         <!-- Zoekbalk -->
         <form action="{{ route('contacts.index') }}" method="GET" class="mb-6">

@@ -19,22 +19,16 @@ class ContactController extends Controller
 
     public function store(Request $request)
     {
-        $query = Contact::query();
-    
-        if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%')
-                  ->orWhere('phone', 'like', '%' . $request->search . '%');
-        }
-    
-        $contacts = $query->get();
-    
-        $selectedContact = null;
-        if ($request->has('contact_id')) {
-            $selectedContact = Contact::with('reservations')->find($request->contact_id);
-        }
-    
-        return view('contactgegevens.index', compact('contacts', 'selectedContact'));
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:contacts',
+            'phone' => 'required|string|max:15',
+            'message' => 'nullable|string',
+        ]);
+
+        Contact::create($request->all());
+
+        return redirect()->route('contacts.index')->with('success', 'Contact successfully added.');
     }
     
     public function show(Contact $contact)
