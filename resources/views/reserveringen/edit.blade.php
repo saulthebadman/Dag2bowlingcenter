@@ -42,4 +42,31 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block font-medium text-gray-700">Datum</label>
-                    <input type="date
+                    <input type="date" name="datum" class="w-full border rounded px-4 py-2" value="{{ old('datum', $reservering->datum) }}">
+                </div>
+
+                <div>
+                    <label class="block font-medium text-gray-700">Tijd</label>
+                    <input type="time" name="tijd" class="w-full border rounded px-4 py-2" value="{{ old('tijd', $reservering->tijd) }}">
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-medium text-gray-700">Aantal Personen</label>
+                <input type="number" name="aantal_personen" class="w-full border rounded px-4 py-2" value="{{ old('aantal_personen', $reservering->aantal_personen) }}">
+            </div>
+
+            <div>
+                <label class="block font-medium text-gray-700">Opmerking</label>
+                <textarea name="opmerking" rows="3" class="w-full border rounded px-4 py-2">{{ old('opmerking', $reservering->opmerking) }}</textarea>
+            </div>
+
+            <div class="flex justify-between mt-6">
+                <a href="{{ route('reserveringen.index') }}" class="text-gray-600 hover:underline">Annuleren</a>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded">
+                    Wijzigingen Opslaan
+                </button>
+            </div>
+        </form>
+    </div>
+</x-app-layout>
