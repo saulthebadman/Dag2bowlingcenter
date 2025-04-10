@@ -53,6 +53,21 @@
             </div>
 
             <div>
+                <label class="block font-medium text-gray-700">Baan</label>
+                <select name="baan_id" class="w-full border rounded px-3 py-2">
+                    <option value="">Selecteer een baan</option>
+                    @foreach ($banen as $baan)
+                        <option value="{{ $baan->id }}" {{ old('baan_id', $reservering->baan_id) == $baan->id ? 'selected' : '' }}>
+                            Baan {{ $baan->nummer }} {{ $baan->is_kinderbaan ? '(Kinderbaan)' : '' }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('baan_id')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
                 <label class="block font-medium text-gray-700">Opmerking</label>
                 <textarea name="opmerking" rows="3" class="w-full border rounded px-4 py-2">{{ old('opmerking', $reservering->opmerking) }}</textarea>
             </div>

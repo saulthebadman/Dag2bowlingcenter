@@ -19,39 +19,39 @@
             </div>
         @endif
 
-        <form action="{{ route('reserveringen.store') }}" method="POST" class="space-y-4">
+        <form action="{{ route('reserveringen.store') }}" method="POST" class="space-y-4" id="reserveringForm">
             @csrf
 
             <div>
                 <label class="block font-medium text-gray-700">Klantnaam</label>
-                <input type="text" name="klant_naam" placeholder="Vul de naam van de klant in" class="w-full border rounded px-4 py-2" value="{{ old('klant_naam') }}">
+                <input type="text" name="klant_naam" placeholder="Vul de naam van de klant in" class="w-full border rounded px-4 py-2" value="{{ old('klant_naam') }}" required>
             </div>
 
             <div>
                 <label class="block font-medium text-gray-700">Telefoonnummer</label>
-                <input type="text" name="telefoonnummer" placeholder="Vul het telefoonnummer in" class="w-full border rounded px-4 py-2" value="{{ old('telefoonnummer') }}">
+                <input type="text" name="telefoonnummer" placeholder="Vul het telefoonnummer in" class="w-full border rounded px-4 py-2" value="{{ old('telefoonnummer') }}" required pattern="^\d{2,4}[-\s]?\d{6,10}$" title="Voer een geldig telefoonnummer in">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block font-medium text-gray-700">Datum</label>
-                    <input type="date" name="datum" placeholder="dd/mm/yyyy" class="w-full border rounded px-4 py-2" value="{{ old('datum') }}">
+                    <input type="date" name="datum" placeholder="dd/mm/yyyy" class="w-full border rounded px-4 py-2" value="{{ old('datum') }}" required>
                 </div>
 
                 <div>
                     <label class="block font-medium text-gray-700">Tijd</label>
-                    <input type="time" name="tijd" placeholder="--:--" class="w-full border rounded px-4 py-2" value="{{ old('tijd') }}">
+                    <input type="time" name="tijd" placeholder="--:--" class="w-full border rounded px-4 py-2" value="{{ old('tijd') }}" required>
                 </div>
             </div>
 
             <div>
                 <label class="block font-medium text-gray-700">Aantal Personen</label>
-                <input type="number" name="aantal_personen" placeholder="Vul het aantal personen in" class="w-full border rounded px-4 py-2" value="{{ old('aantal_personen') }}">
+                <input type="number" name="aantal_personen" placeholder="Vul het aantal personen in" class="w-full border rounded px-4 py-2" value="{{ old('aantal_personen') }}" required min="1" max="10">
             </div>
 
             <div>
                 <label class="block font-medium text-gray-700">Baan</label>
-                <select name="baan_id" class="w-full border rounded px-3 py-2">
+                <select name="baan_id" class="w-full border rounded px-3 py-2" required>
                     <option value="">Selecteer een baan</option>
                     @foreach ($banen as $baan)
                         <option value="{{ $baan->id }}" {{ old('baan_id') == $baan->id ? 'selected' : '' }}>
@@ -106,11 +106,23 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('reserveringForm');
             const datumInput = document.querySelector('input[name="datum"]');
             const tijdInput = document.querySelector('input[name="tijd"]');
             const aantalPersonenInput = document.querySelector('input[name="aantal_personen"]');
             const totaalbedragInput = document.getElementById('totaalbedrag');
             const magicBowlenCheckbox = document.getElementById('magic_bowlen');
+
+            form.addEventListener('submit', function (e) {
+                const datum = datumInput.value;
+                const tijd = tijdInput.value;
+                const aantalPersonen = parseInt(aantalPersonenInput.value) || 0;
+
+                if (!datum || !tijd || aantalPersonen <= 0) {
+                    e.preventDefault();
+                    alert('Vul alle verplichte velden correct in.');
+                }
+            });
 
             function berekenTarief() {
                 const datum = datumInput.value;
