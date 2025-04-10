@@ -16,7 +16,12 @@ class ContactController extends Controller
                   ->orWhere('phone', 'like', '%' . $search . '%');
         })->get();
 
-        return view('contactgegevens.index', compact('contacts', 'search'));
+        $message = null;
+        if ($search && $contacts->isEmpty()) {
+            $message = 'Geen klant gevonden. Controleer de invoer of probeer een andere zoekterm.';
+        }
+
+        return view('contactgegevens.index', compact('contacts', 'search', 'message'));
     }
 
     public function create()

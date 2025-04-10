@@ -14,7 +14,11 @@
             </div>
         @endif
 
-        
+        @if ($message)
+            <div class="mb-4 p-4 bg-yellow-100 text-yellow-800 rounded-md">
+                {{ $message }}
+            </div>
+        @endif
 
         <!-- Zoekbalk -->
         <form action="{{ route('contacts.index') }}" method="GET" class="mb-6">
