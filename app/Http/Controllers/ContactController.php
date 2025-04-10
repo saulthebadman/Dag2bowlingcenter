@@ -29,8 +29,10 @@ class ContactController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:contacts',
-            'phone' => 'required|string|max:15',
+            'phone' => 'required|string|digits_between:8,11',
             'message' => 'nullable|string',
+        ], [
+            'phone.digits_between' => 'Het telefoonnummer moet minimaal 8 en maximaal 11 cijfers bevatten.',
         ]);
 
         Contact::create($request->all());
@@ -56,8 +58,10 @@ class ContactController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:contacts,email,' . $contact->id,
-            'phone' => 'required|string|max:15',
+            'phone' => 'required|string|digits_between:8,11',
             'message' => 'nullable|string',
+        ], [
+            'phone.digits_between' => 'Het telefoonnummer moet minimaal 8 en maximaal 11 cijfers bevatten.',
         ]);
 
         $contact->update($request->all());
