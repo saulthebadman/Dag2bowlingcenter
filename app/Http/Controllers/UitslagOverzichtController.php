@@ -17,7 +17,7 @@ class UitslagOverzichtController extends Controller
 
     public function index()
     {
-        // Haal reserveringen op met gekoppelde persoon en uitslagen
+        // Haal reserveringen op met gekoppelde persoon, spellen en uitslagen
         $reserveringen = Reservering::with(['persoon', 'spellen.uitslagen'])->get();
 
         // Retourneer de juiste view met de data

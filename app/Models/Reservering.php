@@ -10,7 +10,7 @@ class Reservering extends Model
     use HasFactory;
 
     // Specificeer de juiste tabelnaam
-    protected $table = 'reservering'; // Aangepaste tabelnaam
+    protected $table = 'reservering';
 
     protected $fillable = [
         'persoon_id',

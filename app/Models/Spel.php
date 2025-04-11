@@ -9,7 +9,8 @@ class Spel extends Model
 {
     use HasFactory;
 
-    protected $table = 'spel'; // Aangepaste tabelnaam
+    // Specificeer de juiste tabelnaam
+    protected $table = 'spel';
 
     protected $fillable = ['persoon_id', 'reservering_id'];
 
