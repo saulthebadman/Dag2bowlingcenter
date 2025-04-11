@@ -32,13 +32,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($uitslagen as $uitslag)
+                            @forelse ($uitslagen as $uitslag)
                                 <tr>
                                     <td class="border border-gray-300 px-4 py-2">{{ $uitslag['naam'] }}</td>
                                     <td class="border border-gray-300 px-4 py-2">{{ $uitslag['punten'] }}</td>
                                     <td class="border border-gray-300 px-4 py-2">{{ $uitslag['datum'] }}</td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td class="border border-gray-300 px-4 py-2">John Doe</td>
+                                    <td class="border border-gray-300 px-4 py-2">150</td>
+                                    <td class="border border-gray-300 px-4 py-2">2023-10-01</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-4 py-2">Jane Smith</td>
+                                    <td class="border border-gray-300 px-4 py-2">200</td>
+                                    <td class="border border-gray-300 px-4 py-2">2023-10-02</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-4 py-2">Alice Johnson</td>
+                                    <td class="border border-gray-300 px-4 py-2">180</td>
+                                    <td class="border border-gray-300 px-4 py-2">2023-10-03</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

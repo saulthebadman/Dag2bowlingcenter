@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReserveringController extends Controller
 {
@@ -37,20 +38,10 @@ class ReserveringController extends Controller
             'datum' => 'nullable|date',
         ]);
 
-        // Mock data for demonstration purposes
-        $uitslagen = collect([
-            ['naam' => 'John Doe', 'punten' => 150, 'datum' => '2023-10-01'],
-            ['naam' => 'Jane Smith', 'punten' => 200, 'datum' => '2023-10-01'],
-            ['naam' => 'Alice Johnson', 'punten' => 180, 'datum' => '2023-10-01'],
+        // Fetch data using the stored procedure
+        $uitslagen = DB::select('CALL SP_OverzichtUitslagenPerReservering(?)', [
+            $validated['datum'] ?? null,
         ]);
-
-        // Filter by date if provided
-        if (!empty($validated['datum'])) {
-            $uitslagen = $uitslagen->where('datum', $validated['datum']);
-        }
-
-        // Sort by points in descending order
-        $uitslagen = $uitslagen->sortByDesc('punten');
 
         return view('reservering.uitslagen', compact('uitslagen'));
     }
