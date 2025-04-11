@@ -17,10 +17,10 @@ class UitslagOverzichtController extends Controller
 
     public function index()
     {
-        // Haal reserveringen op (pas dit aan naar jouw logica)
-        $reserveringen = Reservering::all();
+        // Haal reserveringen op met gekoppelde persoon en uitslagen
+        $reserveringen = Reservering::with(['persoon', 'spellen.uitslagen'])->get();
 
-        // Retourneer de juiste view
+        // Retourneer de juiste view met de data
         return view('uitslagoverzicht.index', compact('reserveringen'));
     }
 

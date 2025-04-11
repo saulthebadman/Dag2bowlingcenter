@@ -11,7 +11,7 @@ class Spel extends Model
 
     protected $table = 'spel'; // Aangepaste tabelnaam
 
-    protected $fillable = ['naam', 'reservering_id'];
+    protected $fillable = ['persoon_id', 'reservering_id'];
 
     public function reservering()
     {

@@ -9,17 +9,10 @@ class Uitslag extends Model
 {
     use HasFactory;
 
-    protected $table = 'uitslag'; // Aangepaste tabelnaam
-
-    protected $fillable = ['spel_id', 'persoon_id', 'aantal_punten'];
+    protected $fillable = ['spel_id', 'aantal_punten'];
 
     public function spel()
     {
         return $this->belongsTo(Spel::class);
-    }
-
-    public function persoon()
-    {
-        return $this->belongsTo(Persoon::class);
     }
 }

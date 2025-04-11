@@ -102,8 +102,9 @@ INSERT INTO uitslag (spel_id, aantal_punten, created_at, updated_at) VALUES
 (6, 234, NOW(), NOW()),
 (7, 299, NOW(), NOW());
 
--- Verwijder bestaande stored procedure als deze al bestaat
+-- Verwijder bestaande stored procedures als deze al bestaan
 DROP PROCEDURE IF EXISTS GetUitslagen;
+DROP PROCEDURE IF EXISTS GetReserveringen;
 
 -- Stored Procedure: Haal uitslagen op met INNER JOIN
 DELIMITER $$
@@ -122,7 +123,26 @@ BEGIN
     ORDER BY u.aantal_punten DESC;
 END$$
 
+-- Stored Procedure: Haal reserveringen op met INNER JOIN
+CREATE PROCEDURE GetReserveringen()
+BEGIN
+    SELECT 
+        r.id AS reservering_id,
+        p.voornaam AS persoon_voornaam,
+        p.achternaam AS persoon_achternaam,
+        r.reserveringsnummer,
+        r.datum,
+        r.begintijd,
+        r.eindtijd,
+        r.aantal_volwassenen,
+        r.aantal_kinderen
+    FROM reservering r
+    INNER JOIN persoon p ON r.persoon_id = p.id
+    ORDER BY r.datum, r.begintijd;
+END$$
+
 DELIMITER ;
 
--- Roep de stored procedure aan
+-- Roep de stored procedures aan
 CALL GetUitslagen();
+CALL GetReserveringen();
