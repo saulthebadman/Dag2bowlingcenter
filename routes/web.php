@@ -20,6 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/reservering/{id}/edit', [ReserveringController::class, 'edit'])->name('reservering.edit');
     Route::get('/reservering/uitslagen', [ReserveringController::class, 'uitslagen'])->name('reservering.uitslagen');
     Route::post('/reservering/uitslagen', [ReserveringController::class, 'toonUitslagen'])->name('reservering.toonUitslagen');
+    Route::put('/reservering/{id}', [ReserveringController::class, 'update'])->name('reservering.update');
 });
 
 require __DIR__.'/auth.php';
