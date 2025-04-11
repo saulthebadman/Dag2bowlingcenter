@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\UitslagOverzicht;
 use App\Models\Spel;
 use App\Models\Persoon;
-use App\Models\Reservering;
+use App\Models\Reservering; // Zorg ervoor dat deze regel aanwezig is
 use Illuminate\Http\Request;
 
 class UitslagOverzichtController extends Controller
@@ -17,9 +17,11 @@ class UitslagOverzichtController extends Controller
 
     public function index()
     {
-        // Haal alle uitslagen op met de bijbehorende persoon en spel
-        $uitslagen = UitslagOverzicht::with(['persoon', 'spel'])->get();
-        return view('uitslagoverzicht.index', compact('uitslagen'));
+        // Haal reserveringen op (pas dit aan naar jouw logica)
+        $reserveringen = Reservering::all();
+
+        // Retourneer de juiste view
+        return view('uitslagoverzicht.index', compact('reserveringen'));
     }
 
     public function create()

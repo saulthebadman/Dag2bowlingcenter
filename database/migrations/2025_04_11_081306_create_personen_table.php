@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('personen', function (Blueprint $table) {
             $table->id();
-            $table->string('naam'); // Voeg een kolom toe voor de naam van de persoon
+            $table->string('naam');
             $table->timestamps();
         });
     }
@@ -19,3 +19,4 @@ return new class extends Migration {
         Schema::dropIfExists('personen');
     }
 };
+

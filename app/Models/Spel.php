@@ -9,13 +9,17 @@ class Spel extends Model
 {
     use HasFactory;
 
+    protected $table = 'spel'; // Aangepaste tabelnaam
+
+    protected $fillable = ['naam', 'reservering_id'];
+
     public function reservering()
     {
-        return $this->hasOne(Reservering::class);
+        return $this->belongsTo(Reservering::class);
     }
 
     public function uitslagen()
     {
-        return $this->hasMany(UitslagOverzicht::class);
+        return $this->hasMany(Uitslag::class);
     }
 }

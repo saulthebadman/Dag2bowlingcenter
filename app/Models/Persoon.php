@@ -9,8 +9,13 @@ class Persoon extends Model
 {
     use HasFactory;
 
-    public function uitslagen()
+    // Specificeer de juiste tabelnaam
+    protected $table = 'persoon'; // Aangepaste tabelnaam
+
+    protected $fillable = ['naam'];
+
+    public function reserveringen()
     {
-        return $this->hasMany(UitslagOverzicht::class);
+        return $this->hasMany(Reservering::class);
     }
 }

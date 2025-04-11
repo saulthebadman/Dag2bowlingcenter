@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UitslagOverzicht extends Model
+class Uitslag extends Model
 {
     use HasFactory;
 
-    protected $table = 'uitslagoverzicht'; // Zorg ervoor dat de tabelnaam correct is
+    protected $table = 'uitslag'; // Aangepaste tabelnaam
 
     protected $fillable = ['spel_id', 'persoon_id', 'aantal_punten'];
 
