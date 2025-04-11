@@ -25,7 +25,6 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-    // Zorg ervoor dat deze route correct is ingesteld
     Route::resource('uitslagoverzicht', UitslagOverzichtController::class);
 
     Route::get('/uitslagoverzicht/{id}/show', [UitslagOverzichtController::class, 'showByReservering'])->name('uitslagoverzicht.show');

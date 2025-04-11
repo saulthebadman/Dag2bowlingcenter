@@ -17,9 +17,4 @@ class Uitslag extends Model
     {
         return $this->belongsTo(Spel::class);
     }
-
-    public function persoon()
-    {
-        return $this->belongsTo(Persoon::class, 'persoon_id');
-    }
 }

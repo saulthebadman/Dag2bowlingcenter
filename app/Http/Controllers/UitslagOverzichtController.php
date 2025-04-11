@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Uitslag; // Zorg ervoor dat deze regel aanwezig is
 use App\Models\UitslagOverzicht;
 use App\Models\Spel;
 use App\Models\Persoon;
@@ -53,10 +54,11 @@ class UitslagOverzichtController extends Controller
         return redirect()->route('uitslagoverzicht.index')->with('success', 'Uitslag toegevoegd.');
     }
 
-    public function edit(UitslagOverzicht $uitslagOverzicht)
+    public function edit(Uitslag $uitslagOverzicht)
     {
         $spellen = Spel::all();
         $personen = Persoon::all();
+
         return view('uitslagoverzicht.edit', compact('uitslagOverzicht', 'spellen', 'personen'));
     }
 

@@ -26,7 +26,6 @@ class SpelerController extends Controller
 
     public function update(Request $request, $id)
     {
-        
         $request->validate([
             'aantal_punten' => 'required|integer|min:0|max:300',
         ], [
