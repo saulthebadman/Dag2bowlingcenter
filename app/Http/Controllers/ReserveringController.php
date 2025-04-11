@@ -27,13 +27,14 @@ class ReserveringController extends Controller
 
     public function uitslagen()
     {
-        return view('reservering.uitslagen');
+        $uitslagen = []; // Ensure $uitslagen is defined as an empty array
+        return view('reservering.uitslagen', compact('uitslagen'));
     }
 
     public function toonUitslagen(Request $request)
     {
         $validated = $request->validate([
-            'datum' => 'required|date',
+            'datum' => 'nullable|date',
         ]);
 
         // Mock data for demonstration purposes
@@ -41,7 +42,15 @@ class ReserveringController extends Controller
             ['naam' => 'John Doe', 'punten' => 150, 'datum' => '2023-10-01'],
             ['naam' => 'Jane Smith', 'punten' => 200, 'datum' => '2023-10-01'],
             ['naam' => 'Alice Johnson', 'punten' => 180, 'datum' => '2023-10-01'],
-        ])->where('datum', $validated['datum'])->sortByDesc('punten');
+        ]);
+
+        // Filter by date if provided
+        if (!empty($validated['datum'])) {
+            $uitslagen = $uitslagen->where('datum', $validated['datum']);
+        }
+
+        // Sort by points in descending order
+        $uitslagen = $uitslagen->sortByDesc('punten');
 
         return view('reservering.uitslagen', compact('uitslagen'));
     }
