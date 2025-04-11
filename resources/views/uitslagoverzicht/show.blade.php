@@ -25,7 +25,7 @@
                     </td>
                     <td class="py-2 px-4 border">{{ $uitslag->aantal_punten }}</td>
                     <td class="py-2 px-4 border">
-                        <a href="{{ route('uitslagoverzicht.edit', $uitslag->id) }}" 
+                        <a href="{{ route('spelers.edit', $uitslag->id) }}" 
                            class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
                             Wijzigen
                         </a>

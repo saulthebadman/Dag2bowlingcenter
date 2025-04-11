@@ -26,6 +26,7 @@ class SpelerController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Valideer de invoer
         $request->validate([
             'aantal_punten' => 'required|integer|min:0|max:300',
         ], [
@@ -36,6 +37,7 @@ class SpelerController extends Controller
         $uitslag = Uitslag::findOrFail($id);
         $uitslag->update($request->only('aantal_punten'));
 
+        // Redirect naar het overzicht met een succesmelding
         return redirect()->route('spelers.index')->with('success', 'Aantal punten is gewijzigd.');
     }
 }

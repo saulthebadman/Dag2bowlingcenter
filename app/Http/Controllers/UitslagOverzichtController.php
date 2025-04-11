@@ -84,7 +84,7 @@ class UitslagOverzichtController extends Controller
     {
         try {
             // Haal de reservering op met gekoppelde spellen en uitslagen
-            $reservering = Reservering::with(['persoon', 'spellen.uitslagen.persoon'])->findOrFail($id);
+            $reservering = Reservering::with(['persoon', 'spellen.uitslagen'])->findOrFail($id);
 
             // Haal de uitslagen op, gesorteerd van hoog naar laag
             $uitslagen = $reservering->spellen->flatMap->uitslagen->sortByDesc('aantal_punten');
