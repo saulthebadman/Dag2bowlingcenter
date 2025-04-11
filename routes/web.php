@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UitslagOverzichtController;
+use App\Http\Controllers\SpelerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +19,24 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    Route::resource('uitslagoverzicht', UitslagOverzichtController::class);
+
+    Route::get('/uitslagoverzicht/{id}/show', [UitslagOverzichtController::class, 'showByReservering'])->name('uitslagoverzicht.show');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Routes voor Spelers
+    Route::get('/spelers', [SpelerController::class, 'index'])->name('spelers.index');
+    Route::get('/spelers/{id}/edit', [SpelerController::class, 'edit'])->name('spelers.edit');
+    Route::put('/spelers/{id}', [SpelerController::class, 'update'])->name('spelers.update');
+});
+
+require __DIR__.'/auth.php';

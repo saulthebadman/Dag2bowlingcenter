@@ -1,0 +1,10 @@
+CREATE TABLE uitslagoverzicht (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    spel_id BIGINT UNSIGNED NOT NULL,
+    persoon_id BIGINT UNSIGNED NOT NULL,
+    aantal_punten INT NOT NULL,
+    created_at TIMESTAMP NULL DEFAULT NULL,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
+    FOREIGN KEY (spel_id) REFERENCES spellen(id) ON DELETE CASCADE,
+    FOREIGN KEY (persoon_id) REFERENCES personen(id) ON DELETE CASCADE
+);
