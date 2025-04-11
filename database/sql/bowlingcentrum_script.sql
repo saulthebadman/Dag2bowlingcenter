@@ -80,7 +80,9 @@ INSERT INTO reservering (persoon_id, openingstijd_id, baan_id, pakket_optie_id, 
 (3, 7, 3, 1, 'Bevestigd', '2022122400003', '2022-12-24', 2, '16:00', '18:00', 4, NULL, NOW(), NOW()),
 (1, 2, 6, NULL, 'Bevestigd', '2022122700004', '2022-12-27', 2, '17:00', '19:00', 2, NULL, NOW(), NOW()),
 (4, 3, 4, 4, 'Bevestigd', '2022122800005', '2022-12-28', 1, '14:00', '15:00', 3, NULL, NOW(), NOW()),
-(5, 10, 5, 4, 'Bevestigd', '2022122800006', '2022-12-28', 2, '19:00', '21:00', 2, NULL, NOW(), NOW());
+(5, 10, 5, 4, 'Bevestigd', '2022122800006', '2022-12-28', 2, '19:00', '21:00', 2, NULL, NOW(), NOW()),
+-- Reservering zonder gekoppelde spellen of uitslagen (voor het testen van het unhappy path)
+(6, 1, 1, NULL, 'Bevestigd', '2022123000007', '2022-12-30', 2, '14:00', '16:00', 2, 1, NOW(), NOW());
 
 -- Voeg voorbeeldgegevens toe aan spel
 INSERT INTO spel (persoon_id, reservering_id, created_at, updated_at) VALUES

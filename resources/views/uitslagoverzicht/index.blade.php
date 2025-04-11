@@ -1,6 +1,16 @@
 <x-app-layout>
     <div class="container mx-auto px-4">
         <h1 class="text-2xl font-bold mb-4">Uitslag Overzicht</h1>
+
+        <!-- Filter Form -->
+        <form method="GET" action="{{ route('uitslagoverzicht.index') }}" class="mb-4">
+            <div class="flex items-center">
+                <input type="text" name="filter" value="{{ $filter }}" placeholder="Filter op naam"
+                    class="border border-gray-300 rounded px-2 py-1 mr-2">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded">Filter</button>
+            </div>
+        </form>
+
         <table class="table-auto w-full border border-gray-200 bg-white">
             <thead>
                 <tr class="bg-gray-100">
@@ -11,7 +21,7 @@
                     <th class="py-2 px-4 border">Eindtijd</th>
                     <th class="py-2 px-4 border">Aantal Volwassenen</th>
                     <th class="py-2 px-4 border">Aantal Kinderen</th>
-                    <th class="py-2 px-4 border">Score</th>
+                    <th class="py-2 px-4 border">Acties</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,10 +39,10 @@
                     <td class="py-2 px-4 border">{{ $reservering->aantal_volwassenen }}</td>
                     <td class="py-2 px-4 border">{{ $reservering->aantal_kinderen }}</td>
                     <td class="py-2 px-4 border">
-                        @php
-                            $score = $reservering->spellen->flatMap->uitslagen->sum('aantal_punten');
-                        @endphp
-                        {{ $score }}
+                        <a href="{{ route('uitslagoverzicht.show', $reservering->id) }}" 
+                           class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
+                            Bekijk Score
+                        </a>
                     </td>
                 </tr>
                 @empty

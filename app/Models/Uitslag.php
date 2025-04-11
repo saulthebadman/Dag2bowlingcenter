@@ -9,6 +9,9 @@ class Uitslag extends Model
 {
     use HasFactory;
 
+    // Specificeer de juiste tabelnaam
+    protected $table = 'uitslag';
+
     protected $fillable = ['spel_id', 'aantal_punten'];
 
     public function spel()

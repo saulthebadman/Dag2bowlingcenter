@@ -15,13 +15,23 @@ class UitslagOverzichtController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        // Haal reserveringen op met gekoppelde persoon, spellen en uitslagen
-        $reserveringen = Reservering::with(['persoon', 'spellen.uitslagen'])->get();
+        // Haal de filterwaarde op
+        $filter = $request->input('filter', '');
 
-        // Retourneer de juiste view met de data
-        return view('uitslagoverzicht.index', compact('reserveringen'));
+        // Haal reserveringen op met gekoppelde persoon, spellen en uitslagen
+        $reserveringen = Reservering::with(['persoon', 'spellen.uitslagen'])
+            ->whereHas('persoon', function ($query) use ($filter) {
+                if (!empty($filter)) {
+                    $query->where('voornaam', 'like', "%$filter%")
+                          ->orWhere('achternaam', 'like', "%$filter%");
+                }
+            })
+            ->get();
+
+        // Retourneer de juiste view met de data en filter
+        return view('uitslagoverzicht.index', compact('reserveringen', 'filter'));
     }
 
     public function create()
@@ -71,27 +81,19 @@ class UitslagOverzichtController extends Controller
     public function showByReservering($id)
     {
         try {
-            // Haal de reservering op
+            // Simuleer een reservering zonder uitslagen
             $reservering = Reservering::findOrFail($id);
-
-            // Haal de uitslagen op, gesorteerd van hoog naar laag
-            $uitslagen = UitslagOverzicht::whereHas('spel', function ($query) use ($id) {
-                $query->where('reservering_id', $id);
-            })
-            ->with(['persoon', 'spel'])
-            ->orderBy('aantal_punten', 'desc')
-            ->get();
+            $uitslagen = collect(); // Lege collectie om geen uitslagen te simuleren
 
             // Controleer of er uitslagen zijn
             if ($uitslagen->isEmpty()) {
-                return redirect()->back()->with('error', 'Van de geselecteerde reservering zijn geen uitslagen bekend.');
+                return redirect()->route('uitslagoverzicht.index')->with('error', 'Van de geselecteerde reservering zijn geen uitslagen bekend.');
             }
 
             // Toon de uitslagen
-            return view('uitslagoverzicht.reservering', compact('reservering', 'uitslagen'));
+            return view('uitslagoverzicht.show', compact('reservering', 'uitslagen'));
         } catch (\Exception $e) {
-            // Foutafhandeling
-            return redirect()->back()->with('error', 'Er is een fout opgetreden bij het ophalen van de uitslagen.');
+            return redirect()->route('uitslagoverzicht.index')->with('error', 'Er is een fout opgetreden bij het ophalen van de uitslagen.');
         }
     }
 }
