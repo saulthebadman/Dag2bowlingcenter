@@ -18,6 +18,9 @@
                     <x-nav-link :href="route('uitslagoverzicht.index')" :active="request()->routeIs('uitslagoverzicht.*')">
                         {{ __('Uitslag Overzicht') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('spelers.index')" :active="request()->routeIs('spelers.*')">
+                        {{ __('Spelers') }}
+                    </x-nav-link>
                 </div>
             </div>
 
