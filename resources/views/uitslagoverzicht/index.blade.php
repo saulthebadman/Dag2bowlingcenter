@@ -2,6 +2,13 @@
     <div class="container mx-auto px-4">
         <h1 class="text-2xl font-bold mb-4">Uitslag Overzicht</h1>
 
+        <!-- Toon foutmeldingen -->
+        @if (session('error'))
+            <div class="mb-4 text-red-500">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <!-- Filter Form -->
         <form method="GET" action="{{ route('uitslagoverzicht.index') }}" class="mb-4">
             <div class="flex items-center">

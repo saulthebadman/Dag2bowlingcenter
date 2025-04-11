@@ -81,9 +81,11 @@ class UitslagOverzichtController extends Controller
     public function showByReservering($id)
     {
         try {
-            // Simuleer een reservering zonder uitslagen
-            $reservering = Reservering::findOrFail($id);
-            $uitslagen = collect(); // Lege collectie om geen uitslagen te simuleren
+            // Haal de reservering op met gekoppelde spellen en uitslagen
+            $reservering = Reservering::with(['persoon', 'spellen.uitslagen.persoon'])->findOrFail($id);
+
+            // Haal de uitslagen op, gesorteerd van hoog naar laag
+            $uitslagen = $reservering->spellen->flatMap->uitslagen->sortByDesc('aantal_punten');
 
             // Controleer of er uitslagen zijn
             if ($uitslagen->isEmpty()) {
@@ -93,6 +95,7 @@ class UitslagOverzichtController extends Controller
             // Toon de uitslagen
             return view('uitslagoverzicht.show', compact('reservering', 'uitslagen'));
         } catch (\Exception $e) {
+            // Foutafhandeling
             return redirect()->route('uitslagoverzicht.index')->with('error', 'Er is een fout opgetreden bij het ophalen van de uitslagen.');
         }
     }

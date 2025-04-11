@@ -14,11 +14,6 @@ class Reservering extends Model
 
     protected $fillable = [
         'persoon_id',
-        'openingstijd_id',
-        'baan_id',
-        'pakket_optie_id',
-        'reservering_status',
-        'reserveringsnummer',
         'datum',
         'aantal_uren',
         'begintijd',

@@ -9,7 +9,6 @@ class Uitslag extends Model
 {
     use HasFactory;
 
-    // Specificeer de juiste tabelnaam
     protected $table = 'uitslag';
 
     protected $fillable = ['spel_id', 'aantal_punten'];
@@ -17,5 +16,10 @@ class Uitslag extends Model
     public function spel()
     {
         return $this->belongsTo(Spel::class);
+    }
+
+    public function persoon()
+    {
+        return $this->belongsTo(Persoon::class, 'persoon_id');
     }
 }
