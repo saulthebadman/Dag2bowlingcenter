@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS persoon (
     updated_at TIMESTAMP NULL DEFAULT NULL
 );
 
--- Tabel: reservering
+
 CREATE TABLE IF NOT EXISTS reservering (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     persoon_id BIGINT UNSIGNED NOT NULL,
