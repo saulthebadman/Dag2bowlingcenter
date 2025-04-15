@@ -10,7 +10,6 @@
                     </a>
                 </div>
 
-                <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
@@ -20,6 +19,9 @@
                     </x-nav-link>
                     <x-nav-link :href="route('spelers.index')" :active="request()->routeIs('spelers.*')">
                         {{ __('Spelers') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('reservering.index')" :active="request()->routeIs('reservering.index')">
+                        {{ __('Reserveringen') }}
                     </x-nav-link>
                 </div>
             </div>
